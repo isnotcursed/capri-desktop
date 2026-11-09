@@ -116,6 +116,8 @@ Press **Mods** in the Mainframe's CAPRI band. Browse the [mods directory](https:
 
 </details>
 
+For Grok, open **Capri Mainframe > BRAIN > MAX INTELLIGENCE**, paste your `xai-` API key from [xAI](https://console.x.ai), then pick a model. Refresh loads the chat models available on your key.
+
 Beware that Capri may try to take over your human CPU. We take no responsibility for her actions.
 
 </details>
@@ -128,7 +130,7 @@ Beware that Capri may try to take over your human CPU. We take no responsibility
 Voice chat, calls and code mods are Windows only for now.
 
 1. Download [Mac (Apple Silicon)](https://github.com/lachydotmcg/capri-desktop/releases/latest/download/Capri-mac-apple-silicon.zip), [Mac (Intel)](https://github.com/lachydotmcg/capri-desktop/releases/latest/download/Capri-mac-intel.zip), [Linux (AppImage)](https://github.com/lachydotmcg/capri-desktop/releases/latest/download/Capri-linux-x64.AppImage) or [Linux (tar.gz)](https://github.com/lachydotmcg/capri-desktop/releases/latest/download/Capri-linux-x64.tar.gz)
-2. For her brain, open **Capri Mainframe > BRAIN**: use a free NVIDIA, Gemini or OpenRouter key, your own OpenAI, Claude or DeepSeek key, or any OpenAI-compatible provider with a key. Or install [Ollama](https://ollama.com) and run `ollama pull gemma4:e4b`
+2. For her brain, open **Capri Mainframe > BRAIN**: use a free NVIDIA, Gemini or OpenRouter key, your own OpenAI, Claude, Grok or DeepSeek key, or any OpenAI-compatible provider with a key. Or install [Ollama](https://ollama.com) and run `ollama pull gemma4:e4b`
 3. **Mac:** unzip it, drag Capri into Applications, then open Terminal and run this once. Needs macOS 15 or newer
    ```bash
    xattr -dr com.apple.quarantine /Applications/Capri.app
@@ -320,7 +322,7 @@ All the changes are in the [release notes](https://github.com/lachydotmcg/capri-
 
 - [x] Typing to her, with replies in her speech bubble
 - [x] A brain on your PC that sets itself up, or Ollama if you have it
-- [x] A free NVIDIA key, or your own Gemini, OpenRouter, ChatGPT, Claude or DeepSeek key
+- [x] A free NVIDIA key, or your own Gemini, OpenRouter, ChatGPT, Claude, Grok or DeepSeek key
 - [x] Any OpenAI-compatible provider with a key (0.8.3)
 - [x] Three brain tiers: NORMAL, MEDIUM INTELLIGENCE (free) and MAX INTELLIGENCE
 - [x] Remembering things about you, in her notes (me.md)

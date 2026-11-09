@@ -313,6 +313,7 @@ namespace CapriDesktop
                 checks.Add("PASS voice layers: Settings > Voice style > Layers turns on two copies of her under her, like Windows, with Layer 1 and Layer 2's pitch and delay in their own menus; " + layersFound + "; her ElevenLabs replies get them and come back 25 ms longer for their tails; off out of the box and in settings from before them, and off her voice is byte for byte as it was; the layers save and load as set");
                 LocalVoiceChecks();
                 BrainServerChecks();
+                GrokChecks.Run(checks);
                 ProviderRegression.Run(pet, folder);
                 checks.Add("PASS provider key regression: server and key are one atomic pair, concurrent chats stay on their own pair, loopback addresses with paths work, provider switches never reuse another provider's key, saved keys are 0600, plain HTTP is refused away from this PC, provider errors, streamed errors, UI errors and logs redact the key, redirects keep it, and the unkeyed server message is unchanged");
                 ChoresChecks();

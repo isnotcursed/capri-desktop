@@ -28586,6 +28586,7 @@ namespace CapriDesktop
 
         private static void SmokeCloudBrains(System.Collections.Generic.List<string> checks)
         {
+            GrokChecks.Run(checks);
             if (Cloud.KindOf("AIza-test") != "google" || Cloud.KindOf("AQ.Ab8-test") != "google" || Cloud.KindOf("sk-or-test") != "openrouter" || Cloud.KindOf("sk-nous-test") != null || Cloud.KindOf(null) != null || Cloud.KindOf("sk-proj-test") != "openai") throw new Exception("New brain keys reached the wrong provider.");
             if (Brain.Address("google", "/models") != "https://generativelanguage.googleapis.com/v1beta/openai/models" || Brain.Address("openrouter", "/chat/completions") != "https://openrouter.ai/api/v1/chat/completions") throw new Exception("A new brain has the wrong address.");
             bool unknownAddress = false;

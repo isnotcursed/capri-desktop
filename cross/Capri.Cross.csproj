@@ -20,6 +20,7 @@
     <PackageReference Include="Tmds.DBus.Protocol" Version="0.21.3" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="../app/GrokChecks.cs" Link="Shared/GrokChecks.cs" />
     <Compile Include="../app/Brain.cs" Link="Shared/Brain.cs" />
     <Compile Include="../app/Care.cs" Link="Shared/Care.cs" />
     <Compile Include="../app/Engine.cs" Link="Shared/Engine.cs" />

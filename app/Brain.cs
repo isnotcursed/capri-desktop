@@ -333,9 +333,9 @@ namespace CapriDesktop
         internal bool Claude { get { return Kind == "anthropic"; } }
         // Their own Claude or ChatGPT plan, through Claude Code or Codex on their PC.
         internal bool Plan { get { return Plans.Is(Kind); } }
-        internal string Name { get { return Kind == "local" ? Brain.ServerName(Port) : Kind == "anthropic" ? "Claude" : Kind == "google" ? "Gemini" : Kind == "openai" ? "ChatGPT" : Plan ? Plans.App(Kind) : Company; } }
+        internal string Name { get { return Kind == "local" ? Brain.ServerName(Port) : Kind == "anthropic" ? "Claude" : Kind == "google" ? "Gemini" : Kind == "openai" ? "ChatGPT" : Kind == "xai" ? "Grok" : Plan ? Plans.App(Kind) : Company; } }
         internal string Company { get { return Kind == "local" ? Name : CompanyOf(Kind); } }
-        internal static string CompanyOf(string kind) { return kind == "anthropic" || kind == "claudecode" ? "Anthropic" : kind == "deepseek" ? "DeepSeek" : kind == "nvidia" ? "NVIDIA" : kind == "google" ? "Google AI" : kind == "openrouter" ? "OpenRouter" : kind == "openai" || kind == "codex" ? "OpenAI" : "That provider"; }
+        internal static string CompanyOf(string kind) { return kind == "anthropic" || kind == "claudecode" ? "Anthropic" : kind == "deepseek" ? "DeepSeek" : kind == "xai" ? "xAI" : kind == "nvidia" ? "NVIDIA" : kind == "google" ? "Google AI" : kind == "openrouter" ? "OpenRouter" : kind == "openai" || kind == "codex" ? "OpenAI" : "That provider"; }
         internal string Source { get { return Kind + (Kind == "local" ? "|" + Host : "") + "|" + Model; } }
         internal string Sight { get { return Kind == "local" || Kind == "google" || Kind == "openrouter" ? Source : Model; } }
 
@@ -362,6 +362,7 @@ namespace CapriDesktop
             if (key.StartsWith("sk-nous-", StringComparison.Ordinal)) return null;
             if (key.StartsWith("sk-ant-", StringComparison.Ordinal) || IsCode(key)) return "anthropic";
             if (key.StartsWith("nvapi-", StringComparison.Ordinal)) return "nvidia";
+            if (Regex.IsMatch(key, @"\Axai-[A-Za-z0-9_-]+\z")) return "xai";
             if (Regex.IsMatch(key, "^sk-[0-9a-f]{32}$")) return "deepseek";
             return key.StartsWith("sk-", StringComparison.Ordinal) ? "openai" : null;
         }
@@ -424,6 +425,7 @@ namespace CapriDesktop
         internal static string OpenAi = "https://api.openai.com";
         internal static string Anthropic = "https://api.anthropic.com";
         internal static string Codes = "https://capri-reactions.lachydotmcg.workers.dev/brain";
+        internal static string Xai = "https://api.x.ai";
         internal static string DeepSeek = "https://api.deepseek.com";
         internal static string Nvidia = "https://integrate.api.nvidia.com";
         internal static string Google = "https://generativelanguage.googleapis.com/v1beta/openai";
@@ -447,7 +449,7 @@ namespace CapriDesktop
         internal const string Unserved = "Google doesn't serve Gemini where you are. Press Free key for a free NVIDIA key.";
         internal const string NoCredits = "No credits on this key. Add credits on the service's site, or press Free key for a free NVIDIA key.";
         internal const string PlusRejected = "Key rejected. ChatGPT Plus doesn't include API use, so make a key with credits at platform.openai.com.";
-        internal const string NotAKey = "That isn't a Gemini, OpenRouter, NVIDIA, OpenAI, Claude or DeepSeek key.";
+        internal const string NotAKey = "That isn't a Gemini, OpenRouter, NVIDIA, OpenAI, Claude, Grok or DeepSeek key.";
         internal const string NoFreeModels = "OpenRouter has no free chat models on this key. Try Refresh or MAX INTELLIGENCE.";
         // HTTP 451, or a block page where the API's answer should be: the service turns away their country or network, so every key
         // fails the same way (ticket 84, coshac1 on NVIDIA; ticket 88, Void on OpenRouter; both in Russia).
@@ -1831,11 +1833,13 @@ namespace CapriDesktop
             if (kind == "openai") return Regex.IsMatch(id, @"^(gpt-|o\d|chatgpt-)");
             if (kind == "anthropic") return id.StartsWith("claude-", StringComparison.Ordinal);
             if (kind == "deepseek") return id.StartsWith("deepseek-", StringComparison.Ordinal);
+            if (kind == "xai") return id.StartsWith("grok-", StringComparison.Ordinal);
             return true;
         }
 
         private static bool Chats(string kind, string id)
         {
+            if (kind == "xai") return ModelFits(kind, id) && !Regex.IsMatch(id, @"imagine|image|video|audio|voice|tts|transcribe|embed", RegexOptions.IgnoreCase);
             if (kind == "google") return id.StartsWith("gemini-", StringComparison.Ordinal) && !Regex.IsMatch(id, @"embed|image|audio|tts|live|robotics|computer-use|aqa|transcribe|banana|omni", RegexOptions.IgnoreCase);
             if (kind == "openai") return Regex.IsMatch(id, @"^(gpt-|o\d)") && !Regex.IsMatch(id, @"audio|realtime|tts|transcribe|image|search|embed|instruct|codex|moderation|-\d{4}-\d{2}-\d{2}$");
             if (kind == "nvidia") return Regex.IsMatch(id, @"instruct|chat|-it\b|-it-|gpt-oss|kimi|glm|deepseek|qwen|qwq|llama|gemma|mistral|mixtral|magistral|ministral|nemotron|phi-|granite|minimax|hermes|seed|jamba|falcon|solar|olmo|exaone", RegexOptions.IgnoreCase)
@@ -1847,6 +1851,7 @@ namespace CapriDesktop
         {
             if (kind == "anthropic") return Anthropic + "/v1" + path;
             if (kind == "deepseek") return DeepSeek + path;
+            if (kind == "xai") return Xai + "/v1" + path;
             if (kind == "nvidia") return Nvidia + "/v1" + path;
             if (kind == "google") return Google + path;
             if (kind == "openrouter") return OpenRouter + path;
@@ -4040,7 +4045,7 @@ namespace CapriDesktop
         // bounded, so a huge line with no spaces can't hold her up.
         internal static string Redacted(string text)
         {
-            string clean = Regex.Replace(text ?? "", @"\bCAPRI(?:-[0-9A-HJKMNP-TV-Z]{4}){4}\b|\b(?:nvapi-|sk-|AIza|gh[pousr]_|github_pat_|glpat-|xox[abprse]-|xapp-|(?:sk|rk)_(?:live|test)_)[A-Za-z0-9_-]+|\b(?:hf|npm)_[A-Za-z0-9]{20,}\b|(?-i:\bAKIA[0-9A-Z]{16}\b)|\bAQ\.[A-Za-z0-9_.-]+|\bBearer\s+[^\s""',}]+|data:image/[\w.+-]{1,64};base64,[A-Za-z0-9+/=]+", "[redacted]", RegexOptions.IgnoreCase);
+            string clean = Regex.Replace(text ?? "", @"\bCAPRI(?:-[0-9A-HJKMNP-TV-Z]{4}){4}\b|\b(?:nvapi-|xai-|sk-|AIza|gh[pousr]_|github_pat_|glpat-|xox[abprse]-|xapp-|(?:sk|rk)_(?:live|test)_)[A-Za-z0-9_-]+|\b(?:hf|npm)_[A-Za-z0-9]{20,}\b|(?-i:\bAKIA[0-9A-Z]{16}\b)|\bAQ\.[A-Za-z0-9_.-]+|\bBearer\s+[^\s""',}]+|data:image/[\w.+-]{1,64};base64,[A-Za-z0-9+/=]+", "[redacted]", RegexOptions.IgnoreCase);
             clean = Regex.Replace(clean, @"(://[^/\s:@]*:)[^/\s]+@", "$1[redacted]@");
             // The name is checked for its key word once, from its start, so a long word made of them isn't searched again from each one.
             clean = Regex.Replace(clean, @"(\b(?=[A-Za-z0-9_]{0,200}?(?:token(?!s\b)|secret|password|passwd|sshpass))[A-Za-z0-9_]+\s*=(?!=)\s*)(?:""[^""\r\n]*""?|'[^'\r\n]*'?|[^\s""',}]+)", "$1[redacted]", RegexOptions.IgnoreCase);

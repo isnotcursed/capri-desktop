@@ -3577,9 +3577,9 @@ namespace CapriDesktop
             syncing = false;
             string tail = tier == 1 ? nvidiaTail : tier == 2 ? paidTail : null;
             textSaved = tail != null;
-            textEntry.Box.AccessibleName = tier == 1 ? "NVIDIA, Google AI Studio (Gemini) or OpenRouter API key" : "Google AI, OpenRouter, NVIDIA, OpenAI, Anthropic or DeepSeek API key";
+            textEntry.Box.AccessibleName = tier == 1 ? "NVIDIA, Google AI Studio (Gemini) or OpenRouter API key" : "Google AI, OpenRouter, NVIDIA, OpenAI, Anthropic, xAI or DeepSeek API key";
             textEntry.AccessibleName = textEntry.Box.AccessibleName;
-            tierNote.Text = tier == 1 ? mediumKind == "nvidia" ? "Most NVIDIA models can't see your screen." : "NVIDIA, Gemini, OpenRouter" : tier == 2 ? "Gemini, OpenRouter, ChatGPT, Claude, DeepSeek" : "Pick one. Only one brain runs at a time.";
+            tierNote.Text = tier == 1 ? mediumKind == "nvidia" ? "Most NVIDIA models can't see your screen." : "NVIDIA, Gemini, OpenRouter" : tier == 2 ? "ChatGPT, Claude, Grok, DeepSeek and more" : "Pick one. Only one brain runs at a time.";
             textEntry.Cue = textSaved ? (tier == 2 && paidPlan ? "Using your " + tail : "Key saved, ends " + tail) : tier == 1 ? "NVIDIA / Google AI Studio / OpenRouter" : "Paste a brain API key";
             RelabelText();
             Arrange(expanded);
